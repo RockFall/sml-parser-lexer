@@ -5,7 +5,7 @@
 %pos int
 
 %term VAR | FUN | FUNREC
-    | IF | ELSE | MATCH
+    | IF | THEN | ELSE | MATCH
     | EXCLA | NEG
     | HD | TL | ISE | PRINT
     | AND | PLUS | MINUS | MULTI | DIV | EQ | NEQ
@@ -13,14 +13,14 @@
     | LBRACK | RBRACK
     | LBRACE | RBRACE
     | LPAR | RPAR
-    | NAME of string | CINT of int
-    | EOF
+    | NAME of string | CONSTI of int | CONSTB of bool
     | COMMA
-    | NIL
+    | NIL | BOOL | INT
+    | EOF
 
 %nonterm Prog of expr | Decl of expr | Expr of expr | AtomExpr of expr | AppExpr of expr | Const of expr
     | Comps of expr | MatchExpr of expr | CondExpr of expr
-    | Args of expr | Params of expr | TypedVar of expr | Type of expr | AtomType of expr | Types of expr
+    | Args of expr | Params of expr | TypedVar of expr | Type of plcType | AtomType of plcType | Types of plcType list
 
 %prefer
 
@@ -49,12 +49,26 @@ AtomExpr : Const (Const)
     | NAME (Var(NAME))
     | LPAR Expr RPAR (Expr)
 
-Const : CINT (ConI CINT)
+Const : CONSTB (ConB CONSTB)
+    | CONSTI (ConI CONSTI)
+    | LPAR RPAR (List [])
+    | LPAR Type LBRACK RBRACK RPAR (ESeq(Type))
+
+Type :  AtomType (AtomType)
+    | LPAR Types RPAR (ListT (Types))
+    | LBRACK AtomType RBRACK (SeqT AtomType)
+
+AtomType : NIL (ListT [])
+    | BOOL (BoolT)
+    | INT  (IntT)
+    | LPAR Type RPAR (Type)
+
+Types : Type COMMA Type ([Type, Type])
+    | Type COMMA Types ([Type]@Types)
 
 (*Args : Params ()
 Params : TypedVar ()
     | TypedVar COMMA TypedVar ()
 TypedVar : Type NAME ()
-Type :  AtomType ()
-    |   LBRACK AtomType RBRACK ()
-AtomType :  NIL ()*)
+
+*)

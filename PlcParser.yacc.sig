@@ -2,10 +2,13 @@ signature PlcParser_TOKENS =
 sig
 type ('a,'b) token
 type svalue
+val EOF:  'a * 'a -> (svalue,'a) token
+val INT:  'a * 'a -> (svalue,'a) token
+val BOOL:  'a * 'a -> (svalue,'a) token
 val NIL:  'a * 'a -> (svalue,'a) token
 val COMMA:  'a * 'a -> (svalue,'a) token
-val EOF:  'a * 'a -> (svalue,'a) token
-val CINT: (int) *  'a * 'a -> (svalue,'a) token
+val CONSTB: (bool) *  'a * 'a -> (svalue,'a) token
+val CONSTI: (int) *  'a * 'a -> (svalue,'a) token
 val NAME: (string) *  'a * 'a -> (svalue,'a) token
 val RPAR:  'a * 'a -> (svalue,'a) token
 val LPAR:  'a * 'a -> (svalue,'a) token
@@ -33,6 +36,7 @@ val NEG:  'a * 'a -> (svalue,'a) token
 val EXCLA:  'a * 'a -> (svalue,'a) token
 val MATCH:  'a * 'a -> (svalue,'a) token
 val ELSE:  'a * 'a -> (svalue,'a) token
+val THEN:  'a * 'a -> (svalue,'a) token
 val IF:  'a * 'a -> (svalue,'a) token
 val FUNREC:  'a * 'a -> (svalue,'a) token
 val FUN:  'a * 'a -> (svalue,'a) token

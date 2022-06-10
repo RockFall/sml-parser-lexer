@@ -18,10 +18,12 @@ Control.Print.stringDepth := 1000;
 
 open PlcFrontEnd;
 
+
 fromString "2+2";
-fromString "15";
 fromString "true";
-fromString "()";
+fromString "(Bool, Int)";
+fromString "[Bool, Int]";
+fromString "Bool";
 fromString "(6,false)[1]";
 fromString "([Bool] [])";
 fromString "print x; true";
