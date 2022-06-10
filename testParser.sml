@@ -18,6 +18,7 @@ Control.Print.stringDepth := 1000;
 
 open PlcFrontEnd;
 
+fromString "2+2";
 fromString "15";
 fromString "true";
 fromString "()";
