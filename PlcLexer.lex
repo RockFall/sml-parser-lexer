@@ -23,18 +23,25 @@ fun getLineAsString() =
 (* Define what to do when the end of the file is reached. *)
 fun eof () = Tokens.EOF(0,0)
 
+fun stoi s =
+    case Int.fromString s of
+          SOME i => i
+        | NONE => raise Fail ("Could not convert string to int")
+
 (* Initialize the lexer. *)
 fun init() = ()
 %%
 %header (functor PlcLexerFun(structure Tokens: PlcParser_TOKENS));
-nat=[0-9]+
+alpha=[A-Za-z];
+digit=[0-9];
 name=[a-zA-Z_][a-zA-Z_0-9]*;
+whitespace=[\ \t];
 
 %%
-
 \n => (lineNumber := !lineNumber + 1; lex());
-{whitespace}+ => lex();
+{whitespace}+ => (lex());
+{digit}+ => (CINT(stoi(yytext), yypos, yypos));
 
 "+" => (PLUS(yypos, yypos));
-. => (error("\n %% ERROR %%: Lexer error: invalid character\n"); raise
-Fail("Lexer error: invalid character" ^yytext));
+. => (error("\n %% ERROR %%: Lexer error: invalid character"); raise
+Fail("Lexer error: invalid character: " ^yytext));
