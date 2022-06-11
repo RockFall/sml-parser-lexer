@@ -2,14 +2,18 @@
 
 (* Creat the body of a function expression. *)
 fun makeFunAux (n: int, xs: (plcType * string) list, e: expr): expr =
-    e (* TODO *)
-    ;
+  case xs of
+    ((t, xn)::[]) => Let(xn, Item(n, Var "$list"), e)
+  | ((t, xn)::tl) => Let(xn, Item(n, Var "$list"), makeFunAux(n+1, tl, e));
 
 (* Create the list of arguments of a function. *)
-fun makeType (args: (plcType * string) list): plcType =
+fun separateTypes (args: (plcType * string) list) =
   case args of
-     (t, s)::[] => t
-    | (t, s)::tl => ListT (t:: [makeType tl]);
+      (t, s)::[] => [t]
+    | (t, s)::tl => (t::separateTypes(tl));
+
+fun makeType (args: (plcType * string) list): plcType =
+    ListT(separateTypes(args));
 
 (* Create a function expression. *)
 (* [Int "x", String "s"] *)

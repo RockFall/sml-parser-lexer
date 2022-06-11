@@ -8,11 +8,6 @@ type slvalue = Tokens.svalue
 type ('a,'b) token = ('a,'b) Tokens.token
 type lexresult = (slvalue, pos)token
 
-fun token (s, lpos, rpos) =
-    case s of
-          "var" => VAR(lpos, rpos)
-        | _     => NAME(s, lpos, rpos)
-
 (* A function to print a message error on the screen. *)
 val error = fn x => TextIO.output(TextIO.stdOut, x ^ "\n")
 val lineNumber = ref 0
@@ -28,6 +23,7 @@ fun getLineAsString() =
 (* Define what to do when the end of the file is reached. *)
 fun eof () = Tokens.EOF(0,0)
 
+(* Converts a String to Int/Bool*)
 fun stoi s =
     case Int.fromString s of
           SOME i => i
@@ -56,28 +52,64 @@ whitespace  = [\ \t];
 %%
 
 
-"\n"            => (lineNumber := !lineNumber + 1; lex());
-{whitespace}+   => (lex());
+"\n"              => (lineNumber := !lineNumber + 1; lex());
+{whitespace}+     => (lex());
 
 
-{digit}+        => (CONSTI  (stoi(yytext), yypos, yypos));
-"true"          => (CONSTB  (stob(yytext), yypos, yypos));
-"false"         => (CONSTB  (stob(yytext), yypos, yypos));
+{digit}+          => (CONSTI  (stoi(yytext), yypos, yypos));
+"true"            => (CONSTB  (stob(yytext), yypos, yypos));
+"false"           => (CONSTB  (stob(yytext), yypos, yypos));
 
-"Nil"           => (NIL     (yypos, yypos));
-"Bool"          => (BOOL    (yypos, yypos));
-"Int"           => (INT     (yypos, yypos));
+"Nil"             => (NIL     (yypos, yypos));
+"Bool"            => (BOOL    (yypos, yypos));
+"Int"             => (INT     (yypos, yypos));
 
-"("             => (LPAR    (yypos, yypos));
-")"             => (RPAR    (yypos, yypos));
-"["             => (LBRACK  (yypos, yypos));
-"]"             => (RBRACK  (yypos, yypos));
+"if"              => (IF      (yypos, yypos));
+"then"            => (THEN    (yypos, yypos));
+"else"            => (ELSE    (yypos, yypos));
 
-","             => (COMMA   (yypos, yypos));
+"match"           => (MATCH   (yypos, yypos));
+"with"            => (WITH    (yypos, yypos));
 
-{name}          => (token(yytext, yypos, yypos));
+"var"             => (VAR      (yypos, yypos));
+"fn"              => (FN      (yypos, yypos));
+"fun"             => (FUN     (yypos, yypos));
+"rec"             => (REC     (yypos, yypos));
+"end"             => (END     (yypos, yypos));
 
-"+" => (PLUS(yypos, yypos));
+"hd"              => (HD      (yypos, yypos));
+"tl"              => (TL      (yypos, yypos));
+"ise"             => (ISE     (yypos, yypos));
+"print"           => (PRINT   (yypos, yypos));
+
+"|"               => (BAR     (yypos, yypos));
+"_"               => (UNDERBAR(yypos, yypos));
+"("               => (LPAR    (yypos, yypos));
+")"               => (RPAR    (yypos, yypos));
+"["               => (LBRACK  (yypos, yypos));
+"]"               => (RBRACK  (yypos, yypos));
+"{"               => (LBRACE  (yypos, yypos));
+"}"               => (RBRACE  (yypos, yypos));
+
+"->"              => (ARROW   (yypos, yypos));
+"=>"              => (DARROW  (yypos, yypos));
+
+","               => (COMMA   (yypos, yypos));
+"!"               => (EXCLA(yypos, yypos));
+"&&"              => (AND(yypos, yypos));
+"+"               => (PLUS(yypos, yypos));
+"-"               => (MINUS(yypos, yypos));
+"*"               => (MULTI(yypos, yypos));
+"/"               => (DIV(yypos, yypos));
+"="               => (EQ(yypos, yypos));
+"!="              => (NEQ(yypos, yypos));
+"<"               => (LESS(yypos, yypos));
+"<="              => (LESSEQ(yypos, yypos));
+"::"              => (DBCOLON(yypos, yypos));
+":"              => (COL(yypos, yypos));
+";"               => (SEMIC(yypos, yypos));
+
+{name}            => (NAME(yytext, yypos, yypos));
 
 
 
